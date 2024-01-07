@@ -3,9 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import SignUpForm
+from .models import Record
 
 
 def home(request):
+    records = Record.objects.all()
+    
     if request.method == 'POST':
         username = request.POST.get('name')
         password = request.POST.get('password')
@@ -16,7 +19,7 @@ def home(request):
             return redirect('home')
         else:
             messages.error(request, "There was an error logging in. Please try again.")
-    return render(request, 'home.html', {})
+    return render(request, 'home.html', {"records": records})
 
 
 def logout_user(request):
@@ -24,10 +27,6 @@ def logout_user(request):
     messages.success(request, "You have been logged out.")
     return redirect('home')
 
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import SignUpForm
 
 def register_user(request):
     if request.method == 'POST':
